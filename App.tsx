@@ -1,55 +1,26 @@
-import { StyleSheet, Text, View, Button } from 'react-native';
-import { BarCodeScanner } from 'expo-barcode-scanner';
-import React, { useState, useEffect } from 'react';
-import { Camera } from 'expo-camera';
+// App.tsx
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import HomeScreen from './HomeScreen';
+import QROptions from './QROptions';
+import GenScreen from './GenScreen';
+import ScanScreen from './ScanScreen';
+import { StyleSheet } from 'react-native';
 
+const Stack = createStackNavigator();
 
-export default function App() {
-//  return (
-//    <View style={styles.container}>
-//      <Text style={{color: '#fff'}}>Open up App.js to start working on your app!</Text>
-//      <StatusBar style="auto" />
-//    </View>
-//  );
-  const [hasPermission, setHasPermission] = useState(null);
-  const [scanned, setScanned] = useState(false);
-
-  useEffect(() => {
-    const getBarcodeScannerPermissions = async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
-    };
-    getBarcodeScannerPermissions();
-  }, []);
-
-  const handleBarCodeScanned = ({ type, data }) => {
-    setScanned(true);
-    alert(`Bar code with type ${type} and ${data} has been scanned!`)
-  };
-
-  if (hasPermission === null) {
-    return <Text>Requesting for camera permission</Text>;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>
-  }
-
+const App = () => {
   return (
-    <View style={styles.container}>
-      <BarCodeScanner
-      onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-      style={StyleSheet.absoluteFillObject}/>
-      {scanned && <Button title={`Tap to Scan Again`} onPress={() => setScanned(false)} />}
-    </View>
-  )
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="QRO" component={QROptions} />
+        <Stack.Screen name="Gen" component={GenScreen} />
+        <Stack.Screen name="Scan" component={ScanScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#25292e',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
-});
+export default App;
