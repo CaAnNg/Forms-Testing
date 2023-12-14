@@ -27,10 +27,15 @@ const QROptions = ({ navigation }) => {
     navigation.navigate('Scan'); // Navigate to the Scan screen
   };
 
+  const navigateToFormScreen = () => {
+    navigation.navigate('Form'); // Navigate to the Form screen
+  };
+
   return (
     <View style={styles.container}>
       <CustomButton title="Scan a QR code" onPressOut={navigateToScanScreen} />
       <CustomButton title="Generate QR code" onPressOut={navigateToGenScreen} />
+      <CustomButton title="Fill the forms" onPressOut={navigateToFormScreen} />
     </View>
   );
 };

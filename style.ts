@@ -29,6 +29,7 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
     alignContent: 'center',
     flex: 1,
-    margin: '5%'
+    marginHorizontal:'20%',
   }
 });
+

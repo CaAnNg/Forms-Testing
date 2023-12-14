@@ -1,66 +1,40 @@
+// GenScreen.tsx
 import React, { useState } from 'react';
-import { View, TextInput, Button } from 'react-native';
+import { View, Button } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { styles } from './style';
-
-const CustomTextInput = ({ name, placeholder, value, onChange }) => {
-  return (
-    <TextInput
-      style={styles.textField}
-      onChangeText={(text) => onChange(name, text)}
-      value={value}
-      placeholder={placeholder}
-    />
-  );
-};
-
+import * as FileSystem from 'expo-file-system';
 
 const GenScreen = () => {
-  const [inputValues, setInputValues] = useState({
-    data1: '',
-    data2: '',
-    data3: '',
-  });
+  const [generatedQRCode, setGeneratedQRCode] = useState(null);
 
-  const [generatedQRCode, setGeneratedQRCode] = useState(null); // Declare generatedQRCode
+  const handleGenerateQRCode = async () => {
+    // Read all CSV files in the document directory
+    const documentDirectory = `${FileSystem.documentDirectory}`;
+    const files = await FileSystem.readDirectoryAsync(documentDirectory);
 
-  const handleInputChange = (name, text) => {
-    setInputValues((prevValues) => ({
-      ...prevValues,
-      [name]: text,
-    }));
-  };
+    if (files.length > 0) {
+      let combinedInput = '';
+      for (const file of files) {
+        if (file.startsWith('formData_') && file.endsWith('.csv')) {
+          const filePath = `${documentDirectory}${file}`;
+          const content = await FileSystem.readAsStringAsync(filePath);
+          combinedInput += content + '\n';
+        }
+      }
 
-  const handleGenerateQRCode = () => {
-    const combinedInput = `${inputValues.data1} ${inputValues.data2} ${inputValues.data3}`;
-    setGeneratedQRCode(combinedInput);
+      // Generate QR code from combined data
+      setGeneratedQRCode(combinedInput.trim());
+    }
   };
 
   return (
     <View style={styles.textField}>
-      <CustomTextInput
-        name="data1"
-        value={inputValues.data1}
-        placeholder="Input data 1"
-        onChange={handleInputChange}
-      />
-      <CustomTextInput
-        name="data2"
-        value={inputValues.data2}
-        placeholder="Input data 2"
-        onChange={handleInputChange}
-      />
-      <CustomTextInput
-        name="data3"
-        value={inputValues.data3}
-        placeholder="Input data 3"
-        onChange={handleInputChange}
-      />
       <Button title="Generate QR Code" onPress={handleGenerateQRCode} />
 
       {generatedQRCode && (
         <View style={styles.QRCode}>
-          <QRCode value={generatedQRCode} size={200}/>
+          <QRCode value={generatedQRCode} size={200} />
         </View>
       )}
     </View>
