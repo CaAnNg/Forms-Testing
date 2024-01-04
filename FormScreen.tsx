@@ -12,7 +12,7 @@ const CustomTextInput = ({ name, placeholder, value, onChange }) => {
       value={value}
       placeholder={placeholder}
     />
-  );
+  ); //sets up constant CustomTextInput to be used in the future, and is used for the text inputs. Mentions style, empty value, and a placeholder.
 };
 
 const FormScreen = () => {
@@ -21,17 +21,18 @@ const FormScreen = () => {
     field2: '',
     field3: '',
   });
+  //empty fields
 
   const handleInputChange = (name, text) => {
     setFormData((prevData) => ({
       ...prevData,
       [name]: text,
-    }));
+    })); //changes field text
   };
 
   const handleSaveData = async () => {
-    const combinedInput = `${formData.field1},${formData.field2},${formData.field3}`;
-    const csvFilePath = `${FileSystem.documentDirectory}formData_${Date.now()}.csv`;
+    const combinedInput = `${formData.field1},${formData.field2},${formData.field3}`; //combines input for single qr code
+    const csvFilePath = `${FileSystem.documentDirectory}formData_${Date.now()}.csv`; //adds date to the file name I think
     alert(`Data saved!`);
 
     await FileSystem.writeAsStringAsync(csvFilePath, combinedInput, { encoding: FileSystem.EncodingType.UTF8 });
@@ -47,4 +48,4 @@ const FormScreen = () => {
   );
 };
 
-export default FormScreen;
+export default FormScreen; //renders

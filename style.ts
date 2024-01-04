@@ -1,4 +1,3 @@
-// style.ts
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -14,7 +13,7 @@ export const styles = StyleSheet.create({
   },
   button: {
     marginBottom: '5%', // Use percentage for margin
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   textField: {
     height: '40%', // Use percentage for height
@@ -29,7 +28,36 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
     alignContent: 'center',
     flex: 1,
-    marginHorizontal:'20%',
-  }
+    marginHorizontal: '20%',
+  },
+  head: {
+    height: 40,
+    backgroundColor: '#f1f8ff',
+  },
+  text: {
+    margin: 6,
+    textAlign: 'center',
+  },
+  evenRow: {
+    backgroundColor: '#edf6ff',
+  },
+  oddRow: {
+    backgroundColor: '#ffffff',
+  },
+  selectedRow: {
+    backgroundColor: '#ffcccb',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: '5%', // Adjust the margin as needed
+  },
+  removeButton: {
+    backgroundColor: '#ff6961',
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: '#ffffff',
+  },
 });
-
