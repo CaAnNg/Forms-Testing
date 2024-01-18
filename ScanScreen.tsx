@@ -19,6 +19,7 @@ const ScanScreen = () => {
     getBarCodeScannerPermissions();
   }, []);
 
+  //function on barcode scam
   const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
 
@@ -39,10 +40,10 @@ const ScanScreen = () => {
     }
   };
 
-  if (hasPermission === null) {
+  if (hasPermission === null) { //if permission, render
     return <Text>Requesting for camera permission</Text>;
   }
-  if (hasPermission === false) {
+  if (hasPermission === false) { //if no permission, render this instead
     return <Text>No access to camera</Text>;
   }
 
