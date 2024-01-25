@@ -3,28 +3,29 @@ import { View, Button, ScrollView, TouchableOpacity, Text } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { Table, Row, Rows } from 'react-native-table-component';
 import * as FileSystem from 'expo-file-system';
+import { useNavigation } from '@react-navigation/native';
 import { styles } from './style';
 
 const GenScreen = () => {
-  const [generatedQRCode, setGeneratedQRCode] = useState(null);// useState: data that can change, generatedQRCode: will old value of generated QR code, setGeneratedQRCode function to change generatedQRCode
+  const [generatedQRCode, setGeneratedQRCode] = useState(null);
   const [tableData, setTableData] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
+  const navigation = useNavigation();
 
   const handleGenerateQRCode = () => {
     // Combine data from the updated tableData
     let combinedInput = '';
     for (const rowData of tableData) {
-      combinedInput += rowData.join(',') + '\n'; //rowData: array, .join: literally what it means, \n: new line, +=: adds on?
+      combinedInput += rowData.join(',') + '\n';
     }
-    // Generate QR code from combined data
 
-    setGeneratedQRCode(combinedInput.trim()); // .trim: removes spaces, tabs, linebreaks
+    // Generate QR code from combined data
+    setGeneratedQRCode(combinedInput.trim());
   };
-  
 
   const handleRemoveRows = () => {
     // Filter out selected rows
-    const filteredRows = tableData.filter((_, index) => !selectedRows.includes(index)); // selected rows is a new array?
+    const filteredRows = tableData.filter((_, index) => !selectedRows.includes(index));
     setTableData(filteredRows);
     setSelectedRows([]);
   };
@@ -72,22 +73,22 @@ const GenScreen = () => {
 
   return (
     <View style={styles.textField}>
-      <ScrollView> //scrolls if doesn't fit
+      <ScrollView>
         <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
-          <Row data={['Column 1', 'Column 2', 'Column 3']} style={styles.head} textStyle={styles.text} /> //header row with labels
+          <Row data={['Column 1', 'Column 2', 'Column 3']} style={styles.head} textStyle={styles.text} />
           {tableData.map((rowData, rowIndex) => (
             <TouchableOpacity
               key={rowIndex}
               onPress={() => handleRowPress(rowIndex)}
               style={
-                selectedRows.includes(rowIndex) //weird style things I don't get
+                selectedRows.includes(rowIndex)
                   ? styles.selectedRow
                   : rowIndex % 2 === 0
                   ? styles.evenRow
                   : styles.oddRow
               }
             >
-              <Rows data={[rowData]} textStyle={styles.text} />
+              <Rows data={[rowData]} textStyle={{}} />
             </TouchableOpacity>
           ))}
         </Table>
@@ -97,7 +98,7 @@ const GenScreen = () => {
         <TouchableOpacity
           style={styles.removeButton}
           onPress={handleRemoveRows}
-          disabled={selectedRows.length === 0} //disables if no row is selected
+          disabled={selectedRows.length === 0}
         >
           <Text style={styles.buttonText}>Remove Selected Rows</Text>
         </TouchableOpacity>
@@ -106,7 +107,7 @@ const GenScreen = () => {
 
       {generatedQRCode && (
         <View style={styles.QRCode}>
-          <QRCode value={generatedQRCode} size={200} /> //renders qr code using generatedQRCode
+          <QRCode value={generatedQRCode} size={200} />
         </View>
       )}
     </View>
