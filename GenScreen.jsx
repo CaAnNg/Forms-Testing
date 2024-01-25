@@ -12,22 +12,58 @@ const GenScreen = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const navigation = useNavigation();
 
+  const fetchData = async () => {
+    const documentDirectory = `${FileSystem.documentDirectory}`;
+    const files = await FileSystem.readDirectoryAsync(documentDirectory);
+
+    if (files.length > 0) {
+      let combinedInput = '';
+      for (const file of files) {
+        if (file.startsWith('formData_') && file.endsWith('.csv')) {
+          const filePath = `${documentDirectory}${file}`;
+          const content = await FileSystem.readAsStringAsync(filePath);
+          combinedInput += content + '\n';
+        }
+      }
+
+      // Set table data from combined input
+      const rows = combinedInput.split('\n').map(row => row.split(','));
+      setTableData(rows);
+    }
+  };
+
   const handleGenerateQRCode = () => {
-    // Combine data from the updated tableData
+    // Combine data from the selected rows
     let combinedInput = '';
-    for (const rowData of tableData) {
-      combinedInput += rowData.join(',') + '\n';
+    for (const rowIndex of selectedRows) {
+      combinedInput += tableData[rowIndex].join(',') + '\n';
     }
 
     // Generate QR code from combined data
     setGeneratedQRCode(combinedInput.trim());
   };
 
-  const handleRemoveRows = () => {
-    // Filter out selected rows
-    const filteredRows = tableData.filter((_, index) => !selectedRows.includes(index));
-    setTableData(filteredRows);
-    setSelectedRows([]);
+  const deleteData = async () => {
+    try {
+      // Clear the displayed table data
+      setTableData([]);
+
+      // Clear the data on the file system
+      const documentDirectory = `${FileSystem.documentDirectory}`;
+      const files = await FileSystem.readDirectoryAsync(documentDirectory);
+
+      for (const file of files) {
+        if (file.startsWith('formData_') && file.endsWith('.csv')) {
+          const filePath = `${documentDirectory}${file}`;
+          await FileSystem.deleteAsync(filePath);
+        }
+      }
+
+      // Reload the table data after deletion
+      await fetchData();
+    } catch (error) {
+      console.error('Error deleting form data:', error);
+    }
   };
 
   const handleRowPress = rowIndex => {
@@ -48,26 +84,6 @@ const GenScreen = () => {
 
   // Load table data on component mount
   useEffect(() => {
-    const fetchData = async () => {
-      const documentDirectory = `${FileSystem.documentDirectory}`;
-      const files = await FileSystem.readDirectoryAsync(documentDirectory);
-
-      if (files.length > 0) {
-        let combinedInput = '';
-        for (const file of files) {
-          if (file.startsWith('formData_') && file.endsWith('.csv')) {
-            const filePath = `${documentDirectory}${file}`;
-            const content = await FileSystem.readAsStringAsync(filePath);
-            combinedInput += content + '\n';
-          }
-        }
-
-        // Set table data from combined input
-        const rows = combinedInput.split('\n').map(row => row.split(','));
-        setTableData(rows);
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -88,21 +104,18 @@ const GenScreen = () => {
                   : styles.oddRow
               }
             >
-              <Rows data={[rowData]} textStyle={{}} />
+              <Rows data={[rowData]} textStyle={styles.text} />
             </TouchableOpacity>
           ))}
         </Table>
       </ScrollView>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.removeButton}
-          onPress={handleRemoveRows}
-          disabled={selectedRows.length === 0}
-        >
-          <Text style={styles.buttonText}>Remove Selected Rows</Text>
-        </TouchableOpacity>
         <Button title="Generate QR Code" onPress={handleGenerateQRCode} />
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <Button title="Delete all form data" onPress={deleteData} />
       </View>
 
       {generatedQRCode && (

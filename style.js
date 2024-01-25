@@ -45,17 +45,12 @@ export const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   selectedRow: {
-    backgroundColor: '#ffcccb',
+    backgroundColor: '#80ff80',
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginHorizontal: '5%', // Adjust the margin as needed
-  },
-  removeButton: {
-    backgroundColor: '#ff6961',
-    padding: 10,
-    borderRadius: 5,
   },
   buttonText: {
     color: '#ffffff',
